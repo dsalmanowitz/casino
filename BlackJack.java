@@ -7,11 +7,10 @@ public class BlackJack {
 	private int original;
 	private Deck deck;
 	private ArrayList<Card> hand;
-	private ArrayList<Card> hand2;
 	private ArrayList<Card> dhand;
 	private boolean stand;
 	private int bet;
-	private boolean split;
+	private int count;
 	
 	private static final String[] RANKS =
 		{"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
@@ -21,6 +20,7 @@ public class BlackJack {
 		{11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10};
 	
 	public void start() {
+		count = -1;
 		bet = 0;
 		System.out.println("How much money do you have?");
 		String response = in.nextLine();
@@ -30,7 +30,7 @@ public class BlackJack {
 				ok = false;
 			}
 		}
-		if (Integer.parseInt(response) < 1) {
+		if (ok && Integer.parseInt(response) < 1) {
 			ok = false;
 		}
 		while (!ok) {
@@ -42,16 +42,17 @@ public class BlackJack {
 					ok = false;
 				}
 			}
-			if (Integer.parseInt(response) < 1) {
+			if (ok && Integer.parseInt(response) < 1) {
 				ok = false;
 			}
 		}
 		chips += Integer.parseInt(response);
-		original = chips;
 		newGame();
 	}
 	
 	public void newGame() {
+		original = chips;
+		count++;
 		deck = new Deck(RANKS, SUITS, POINT_VALUES);
 		hand = new ArrayList<Card>(0);
 		hand.add(deck.deal());
@@ -73,7 +74,7 @@ public class BlackJack {
 				ok = false;
 			}
 		}
-		if (Integer.parseInt(response) < 1) {
+		if (ok && Integer.parseInt(response) < 1) {
 			ok = false;
 		}
 		while (!ok) {
@@ -85,7 +86,7 @@ public class BlackJack {
 					ok = false;
 				}
 			}
-			if (Integer.parseInt(response) < 1) {
+			if (ok && Integer.parseInt(response) < 1) {
 				ok = false;
 			}
 		}
@@ -171,6 +172,11 @@ public class BlackJack {
 				}
 			}
 		} else if (value(hand) == 21) {
+			System.out.print("Hand: ");
+			for (Card c : dhand) {
+				System.out.print(c.rank() + " ");
+			}
+			System.out.println("\nValue of Hand: " + value(dhand) + "\n");
 			System.out.println("\nCongratulations, you win.");
 			chips += bet;
 		} else if (value(hand) > 21){
