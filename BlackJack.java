@@ -9,7 +9,7 @@ public class BlackJack {
 	private ArrayList<Card> hand;
 	private ArrayList<Card> dhand;
 	private boolean stand;
-	private int bet;
+	private Integer bet;
 	private int count;
 	
 	private static final String[] RANKS =
@@ -25,6 +25,9 @@ public class BlackJack {
 		System.out.println("How much money do you have?");
 		String response = in.nextLine();
 		boolean ok = true;
+		if (response.equals("")) {
+			ok = false;
+		}
 		for (int i = 0; i < response.length(); i++) {
 			if(!Character.isDigit(response.charAt(i))) {
 				ok = false;
@@ -37,6 +40,9 @@ public class BlackJack {
 			System.out.println("Invalid response. How much money do you have?");
 			response = in.nextLine();
 			ok = true;
+			if (response.equals("")) {
+				ok = false;
+			}
 			for (int i = 0; i < response.length(); i++) {
 				if(!Character.isDigit(response.charAt(i))) {
 					ok = false;
@@ -69,6 +75,9 @@ public class BlackJack {
 		System.out.println("How much would you like to bet?");
 		String response = in.nextLine();
 		boolean ok = true;
+		if (response.equals("")) {
+			ok = false;
+		}
 		for (int i = 0; i < response.length(); i++) {
 			if(!Character.isDigit(response.charAt(i))) {
 				ok = false;
@@ -81,6 +90,9 @@ public class BlackJack {
 			System.out.println("Invalid response. How much would you like to bet?");
 			response = in.nextLine();
 			ok = true;
+			if (response.equals("")) {
+				ok = false;
+			}
 			for (int i = 0; i < response.length(); i++) {
 				if(!Character.isDigit(response.charAt(i))) {
 					ok = false;
@@ -211,21 +223,38 @@ public class BlackJack {
 		}
 	}
 	
+	
 	public void play() {
 		dprint();
-		while (value(hand) < 21 && !stand && chips > 0) {
+		String response;
+		boolean doubledown = false;
+		while (value(hand) < 21 && !stand && chips > 0 && !doubledown) {
 			print(hand);
-			System.out.println("Would you like to hit or stand?");
-			String response = in.nextLine().toLowerCase();
-			while (!response.equals("hit") && !response.equals("stand")) {
-				System.out.println("Invalid input. Would you like to hit or stand?");
+			if (bet*2 > chips) {
 				response = in.nextLine().toLowerCase();
+				System.out.println("Would you like to hit, stand?");
+				while (!response.equals("hit") && !response.equals("stand")) {
+					System.out.println("Invalid input. Would you like to hit or stand?");
+					response = in.nextLine().toLowerCase();
+				}
+			} else {
+				System.out.println("Would you like to hit, stand, or double-down?");
+				response = in.nextLine().toLowerCase();
+				while (!response.equals("hit") && !response.equals("stand") && !response.equals("double down")) {
+					System.out.println("Invalid input. Would you like to hit, stand, or double down?");
+					response = in.nextLine().toLowerCase();
+				}
 			}
+			
 			if (response.equals("hit")) {
 				hand.add(deck.deal());
-			} else {
+			} else if (response.equals("stand")) {
 				stand = true;	
 				dealer();
+			} else {
+				doubledown = true;
+				hand.add(deck.deal());
+				bet *= 2;
 			}
 		}
 		isWin();
