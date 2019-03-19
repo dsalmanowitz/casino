@@ -223,22 +223,29 @@ public class BlackJack {
 		}
 	}
 	
+	public void doubledown() {
+		hand.add(deck.deal());
+		bet *= 2;
+		stand = true;
+		if (value(hand) <= 21) {
+			dealer();
+		}
+	}
 	
 	public void play() {
 		dprint();
 		String response;
-		boolean doubledown = false;
-		while (value(hand) < 21 && !stand && chips > 0 && !doubledown) {
+		while (value(hand) < 21 && !stand && chips > 0) {
 			print(hand);
 			if (bet*2 > chips) {
 				response = in.nextLine().toLowerCase();
-				System.out.println("Would you like to hit, stand?");
+				System.out.println("Would you like to hit or stand?");
 				while (!response.equals("hit") && !response.equals("stand")) {
 					System.out.println("Invalid input. Would you like to hit or stand?");
 					response = in.nextLine().toLowerCase();
 				}
 			} else {
-				System.out.println("Would you like to hit, stand, or double-down?");
+				System.out.println("Would you like to hit, stand, or double down?");
 				response = in.nextLine().toLowerCase();
 				while (!response.equals("hit") && !response.equals("stand") && !response.equals("double down")) {
 					System.out.println("Invalid input. Would you like to hit, stand, or double down?");
@@ -252,9 +259,7 @@ public class BlackJack {
 				stand = true;	
 				dealer();
 			} else {
-				doubledown = true;
-				hand.add(deck.deal());
-				bet *= 2;
+				doubledown();
 			}
 		}
 		isWin();
