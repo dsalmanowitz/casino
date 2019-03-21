@@ -9,8 +9,10 @@ public class BlackJack {
 	private ArrayList<Card> hand;
 	private ArrayList<Card> dhand;
 	private boolean stand;
-	private Integer bet;
-	private int count;
+	private int bet;
+	private boolean split;
+	private int sbet;
+	private Card s;
 	
 	private static final String[] RANKS =
 		{"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
@@ -20,7 +22,7 @@ public class BlackJack {
 		{11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10};
 	
 	public void start() {
-		count = -1;
+		deck = new Deck(RANKS, SUITS, POINT_VALUES);
 		bet = 0;
 		System.out.println("How much money do you have?");
 		String response = in.nextLine();
@@ -52,14 +54,14 @@ public class BlackJack {
 				ok = false;
 			}
 		}
-		chips += Integer.parseInt(response);
+		chips = Integer.parseInt(response);
 		newGame();
 	}
 	
 	public void newGame() {
+		split = false;
 		original = chips;
-		count++;
-		deck = new Deck(RANKS, SUITS, POINT_VALUES);
+		deck.shuffle();
 		hand = new ArrayList<Card>(0);
 		hand.add(deck.deal());
 		hand.add(deck.deal());
@@ -166,6 +168,9 @@ public class BlackJack {
 	
 	public void isWin() {
 		if (stand) {
+			if (dhand.size() == 2 && value(dhand) == 21) {
+				print(hand);
+			}
 			System.out.print("Dealer's Hand: ");
 			for (Card c : dhand) {
 				System.out.print(c.rank() + " ");
@@ -185,10 +190,10 @@ public class BlackJack {
 			}
 		} else if (value(hand) == 21) {
 			System.out.print("Hand: ");
-			for (Card c : dhand) {
+			for (Card c : hand) {
 				System.out.print(c.rank() + " ");
 			}
-			System.out.println("\nValue of Hand: " + value(dhand) + "\n");
+			System.out.println("\nValue of Hand: " + value(hand));
 			System.out.println("\nCongratulations, you win.");
 			chips += bet;
 		} else if (value(hand) > 21){
@@ -219,22 +224,35 @@ public class BlackJack {
 				System.out.println("Have a nice day!");
 			}
 		} else {
-			System.out.println("Sorry, you are out of money. Welcome to Vegas!");
+			System.out.println("Sorry, you're broke. Welcome to Vegas!");
 		}
 	}
 	
 	public void doubledown() {
 		hand.add(deck.deal());
 		bet *= 2;
-		stand = true;
-		if (value(hand) <= 21) {
+		if (value(hand) < 21) {
 			dealer();
 		}
+		isWin();
+	}
+	
+	public void split() {
+		split = true;
+		Card s = hand.get(0);
+		hand.remove(1);
+		hand.add(deck.deal());
 	}
 	
 	public void play() {
 		dprint();
-		String response;
+		String response = "";
+		if (split) {
+			System.out.println("// SECOND HAND //");
+			hand = new ArrayList<Card>(0);
+			hand.add(s);
+			hand.add(deck.deal());
+		}
 		while (value(hand) < 21 && !stand && chips > 0) {
 			print(hand);
 			if (bet*2 > chips) {
@@ -244,6 +262,8 @@ public class BlackJack {
 					System.out.println("Invalid input. Would you like to hit or stand?");
 					response = in.nextLine().toLowerCase();
 				}
+			} else if (!split && hand.get(0) == hand.get(1)) {
+				split();
 			} else {
 				System.out.println("Would you like to hit, stand, or double down?");
 				response = in.nextLine().toLowerCase();
@@ -251,15 +271,25 @@ public class BlackJack {
 					System.out.println("Invalid input. Would you like to hit, stand, or double down?");
 					response = in.nextLine().toLowerCase();
 				}
+				
 			}
 			
 			if (response.equals("hit")) {
 				hand.add(deck.deal());
+				System.out.print("You were dealt ");
+				if (hand.get(hand.size()-1).rank() == "8" || hand.get(hand.size()-1).rank() == "A") {
+					System.out.println("an " + hand.get(hand.size()-1).rank());
+				} else {
+					System.out.println("a " + hand.get(hand.size()-1).rank());
+				}
 			} else if (response.equals("stand")) {
 				stand = true;	
 				dealer();
-			} else {
+			} else if (response.equals("double down")) {
 				doubledown();
+				return;
+			} else {
+				split();
 			}
 		}
 		isWin();
