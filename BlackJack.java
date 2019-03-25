@@ -11,6 +11,7 @@ public class BlackJack {
 	private boolean stand;
 	private int bet;
 	private boolean split;
+	private boolean doubledown;
 	private int scount;
 	private Card s;
 	
@@ -164,8 +165,7 @@ public class BlackJack {
 	
 	public void dealer() {
 		if (split && stand) {
-			dhand.remove(0);
-			dhand.remove(1);
+			dhand = new ArrayList<Card>(0);
 			dhand.add(deck.deal());
 			dhand.add(deck.deal());
 		}
@@ -243,6 +243,7 @@ public class BlackJack {
 	}
 	
 	public void doubledown() {
+		doubledown = true;
 		hand.add(deck.deal());
 		bet *= 2;
 		if (value(hand) < 21) {
@@ -267,7 +268,12 @@ public class BlackJack {
 			hand = new ArrayList<Card>(0);
 			hand.add(s);
 			hand.add(deck.deal());
-				original = chips;
+			original = chips;
+			if (doubledown) {
+				bet /= 2;
+			}
+			stand = false;
+			doubledown = false;
 		}
 		while (value(hand) < 21 && !stand && chips > 0) {
 			print(hand);
