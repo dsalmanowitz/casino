@@ -65,11 +65,8 @@ public class BlackJack {
 		original = chips;
 		deck.shuffle();
 		hand = new ArrayList<Card>(0);
-		/*hand.add(deck.deal());
 		hand.add(deck.deal());
-		*/
-		hand.add(new Card("4", "club", 4));
-		hand.add(new Card("4", "club", 4));
+		hand.add(deck.deal());
 		bet();
 		dhand = new ArrayList<Card>(0);
 		dhand.add(deck.deal());
