@@ -11,7 +11,7 @@ public class BlackJack {
 	private boolean stand;
 	private int bet;
 	private boolean split;
-	private int sbet;
+	private int scount;
 	private Card s;
 	
 	private static final String[] RANKS =
@@ -59,19 +59,23 @@ public class BlackJack {
 	}
 	
 	public void newGame() {
+		scount = 0;
 		split = false;
 		original = chips;
 		deck.shuffle();
 		hand = new ArrayList<Card>(0);
+		/*hand.add(deck.deal());
 		hand.add(deck.deal());
-		hand.add(deck.deal());
+		*/
+		hand.add(new Card("4", "club", 4));
+		hand.add(new Card("4", "club", 4));
 		bet();
 		dhand = new ArrayList<Card>(0);
 		dhand.add(deck.deal());
 		dhand.add(deck.deal());
 		stand = false;
 		play();
-	}
+	} 
 	
 	public void bet() {
 		System.out.println("How much would you like to bet?");
@@ -159,6 +163,12 @@ public class BlackJack {
 	}
 	
 	public void dealer() {
+		if (split && stand) {
+			dhand.remove(0);
+			dhand.remove(1);
+			dhand.add(deck.deal());
+			dhand.add(deck.deal());
+		}
 		stand = true;
 		while (value(dhand) < 17) {
 			dhand.add(deck.deal());
@@ -211,7 +221,8 @@ public class BlackJack {
 		} else {
 			System.out.println("Sorry, you lost $" + win + ". You currently have $" + chips + ".");
 		}
-		if (chips > 0) {
+		
+		if (chips > 0 && (scount > 1 || !split)) {
 			System.out.println("Would you like to play again? (y/n)");
 			String response = in.nextLine().toLowerCase();
 			while (!response.equals("y") && !response.equals("n")) {
@@ -223,6 +234,9 @@ public class BlackJack {
 			} else {
 				System.out.println("Have a nice day!");
 			}
+		} else if (chips > 0) {
+			scount++;
+			play();
 		} else {
 			System.out.println("Sorry, you're broke. Welcome to Vegas!");
 		}
@@ -239,9 +253,10 @@ public class BlackJack {
 	
 	public void split() {
 		split = true;
-		Card s = hand.get(0);
+		s = hand.get(0);
 		hand.remove(1);
 		hand.add(deck.deal());
+		scount++;
 	}
 	
 	public void play() {
@@ -252,6 +267,7 @@ public class BlackJack {
 			hand = new ArrayList<Card>(0);
 			hand.add(s);
 			hand.add(deck.deal());
+				original = chips;
 		}
 		while (value(hand) < 21 && !stand && chips > 0) {
 			print(hand);
@@ -262,8 +278,13 @@ public class BlackJack {
 					System.out.println("Invalid input. Would you like to hit or stand?");
 					response = in.nextLine().toLowerCase();
 				}
-			} else if (!split && hand.get(0) == hand.get(1)) {
-				split();
+			} else if (scount==0 && hand.get(0).pointValue() == hand.get(1).pointValue() && hand.size() == 2) {
+				System.out.println("Would you like to hit, stand, double down, or split?");
+				response = in.nextLine().toLowerCase();
+				while (!response.equals("hit") && !response.equals("stand") && !response.equals("double down") && !response.equals("split")) {
+					System.out.println("Invalid input. Would you like to hit, stand, double down, or split?");
+					response = in.nextLine().toLowerCase();
+				}
 			} else {
 				System.out.println("Would you like to hit, stand, or double down?");
 				response = in.nextLine().toLowerCase();
@@ -271,7 +292,6 @@ public class BlackJack {
 					System.out.println("Invalid input. Would you like to hit, stand, or double down?");
 					response = in.nextLine().toLowerCase();
 				}
-				
 			}
 			
 			if (response.equals("hit")) {
@@ -290,6 +310,7 @@ public class BlackJack {
 				return;
 			} else {
 				split();
+				System.out.println("// FIRST HAND //");
 			}
 		}
 		isWin();
