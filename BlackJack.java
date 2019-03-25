@@ -3,13 +3,13 @@ import java.util.Scanner;
 
 public class BlackJack {
 	Scanner in = new Scanner(System.in);
-	private int chips;
-	private int original;
+	private long chips;
+	private long original;
 	private Deck deck;
 	private ArrayList<Card> hand;
 	private ArrayList<Card> dhand;
 	private boolean stand;
-	private int bet;
+	private long bet;
 	private boolean split;
 	private boolean doubledown;
 	private int scount;
@@ -31,12 +31,13 @@ public class BlackJack {
 		if (response.equals("")) {
 			ok = false;
 		}
+		
 		for (int i = 0; i < response.length(); i++) {
 			if(!Character.isDigit(response.charAt(i))) {
 				ok = false;
 			}
 		}
-		if (ok && Integer.parseInt(response) < 1) {
+		if (ok && Long.parseLong(response) < 1) {
 			ok = false;
 		}
 		while (!ok) {
@@ -51,11 +52,11 @@ public class BlackJack {
 					ok = false;
 				}
 			}
-			if (ok && Integer.parseInt(response) < 1) {
+			if (ok && Long.parseLong(response) < 1) {
 				ok = false;
 			}
 		}
-		chips = Integer.parseInt(response);
+		chips = Long.parseLong(response);
 		newGame();
 	}
 	
@@ -87,7 +88,7 @@ public class BlackJack {
 				ok = false;
 			}
 		}
-		if (ok && Integer.parseInt(response) < 1) {
+		if (ok && Long.parseLong(response) < 1) {
 			ok = false;
 		}
 		while (!ok) {
@@ -102,15 +103,15 @@ public class BlackJack {
 					ok = false;
 				}
 			}
-			if (ok && Integer.parseInt(response) < 1) {
+			if (ok && Long.parseLong(response) < 1) {
 				ok = false;
 			}
 		}
-		if (Integer.parseInt(response) > chips) {
+		if (Long.parseLong(response) > chips) {
 			System.out.println("Cannot bet more than you have.");
 			bet();
 		}
-		bet = Integer.parseInt(response);
+		bet = Long.parseLong(response);
 	}
 	
 	public void print(ArrayList<Card> list) {
@@ -212,7 +213,7 @@ public class BlackJack {
 	}
 	
 	public void end() {
-		int win = original - chips;
+		long win = original - chips;
 		if (win < 1) {
 			System.out.println("You won $" + (win*-1) + ". You currently have $" + chips + ".");
 		} else {
