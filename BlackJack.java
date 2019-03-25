@@ -243,6 +243,12 @@ public class BlackJack {
 		doubledown = true;
 		hand.add(deck.deal());
 		bet *= 2;
+		System.out.print("You were dealt ");
+		if (hand.get(hand.size()-1).rank() == "8" || hand.get(hand.size()-1).rank() == "A") {
+			System.out.println("an " + hand.get(hand.size()-1).rank());
+		} else {
+			System.out.println("a " + hand.get(hand.size()-1).rank());
+		}
 		if (value(hand) < 21) {
 			dealer();
 		}
