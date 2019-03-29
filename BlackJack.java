@@ -318,6 +318,7 @@ public class BlackJack {
 		hand.remove(1);
 		hand.add(deck.deal());
 		scount++;
+		System.out.println("// FIRST HAND //");
 	}
 	
 	public void play() {
@@ -334,14 +335,14 @@ public class BlackJack {
 		}
 		while (value(hand) < 21 && !stand && chips > 0) {
 			print(hand);
-			if (bet*2 > chips) {
+			if (hand.size() != 2 || bet*2 > chips) {
 				response = in.nextLine().toLowerCase();
 				System.out.println("Would you like to hit or stand?");
 				while (!response.equals("hit") && !response.equals("stand")) {
 					System.out.println("Invalid input. Would you like to hit or stand?");
 					response = in.nextLine().toLowerCase();
 				}
-			} else if (scount==0 && hand.get(0).pointValue() == hand.get(1).pointValue() && hand.size() == 2) {
+			} else if (scount==0 && hand.get(0).pointValue() == hand.get(1).pointValue()) {
 				System.out.println("Would you like to hit, stand, double down, or split?");
 				response = in.nextLine().toLowerCase();
 				while (!response.equals("hit") && !response.equals("stand") && !response.equals("double down") && !response.equals("split")) {
@@ -373,7 +374,6 @@ public class BlackJack {
 				return;
 			} else {
 				split();
-				System.out.println("// FIRST HAND //");
 			}
 		}
 		isWin();
