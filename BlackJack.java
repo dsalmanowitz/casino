@@ -272,11 +272,14 @@ public class BlackJack {
 				ok = false;
 			}
 		}
-		if (ok && (Long.parseLong(response) < 1 || Long.parseLong(response) > bet)) {
+		if (ok == false) {
+			System.out.print("Invalid Input. ");
+		} else if (ok && (Long.parseLong(response) < 1 || Long.parseLong(response) > bet)) {
+			System.out.print("Bet is an invalid amount. ");
 			ok = false;
 		}
 		while (!ok) {
-			System.out.println("Invalid response. How much would you like to bet?");
+			System.out.println("How much would you like to bet?");
 			response = in.nextLine();
 			ok = true;
 			if (response.equals("")) {
@@ -287,7 +290,10 @@ public class BlackJack {
 					ok = false;
 				}
 			}
-			if (ok && (Long.parseLong(response) < 1 || Long.parseLong(response) > bet)) {
+			if (ok == false) {
+				System.out.print("Invalid Input. ");
+			} else if (ok && (Long.parseLong(response) < 1 || Long.parseLong(response) > bet)) {
+				System.out.print("Bet is an invalid amount. ");
 				ok = false;
 			}
 		}
