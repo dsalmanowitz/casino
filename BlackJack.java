@@ -12,6 +12,7 @@ public class BlackJack {
 	private long bet;
 	private boolean split;
 	private boolean doubledown;
+	private long ddbet;
 	private int scount;
 	private Card s;
 	
@@ -190,10 +191,18 @@ public class BlackJack {
 			} else {
 				if (value(dhand) > 21 || value(hand) > value(dhand)) {
 					System.out.println("Congratulations, you beat the dealer.");
-					chips += bet;
+					if (doubledown) {
+						chips += ddbet;
+					} else {
+						chips += bet;
+					}
 				} else {
 					System.out.println("Sorry, the dealer beat you.");
-					chips -= bet;
+					if (doubledown) {
+						chips -= ddbet;
+					} else {
+						chips -= bet;
+					}
 				}
 			}
 		} else if (value(hand) == 21) {
@@ -203,11 +212,19 @@ public class BlackJack {
 			}
 			System.out.println("\nValue of Hand: " + value(hand));
 			System.out.println("\nCongratulations, you win.");
-			chips += bet;
+			if (doubledown) {
+				chips += ddbet;
+			} else {
+				chips += bet;
+			}
 		} else if (value(hand) > 21){
 			print(hand);
 			System.out.println("\nBust. Game Over.");
-			chips -= bet;
+			if (doubledown) {
+				chips -= ddbet;
+			} else {
+				chips -= bet;
+			}
 		} 
 		end();
 	}
@@ -243,7 +260,43 @@ public class BlackJack {
 	public void doubledown() {
 		doubledown = true;
 		hand.add(deck.deal());
-		bet *= 2;
+
+		System.out.println("How much more would you like to bet?");
+		String response = in.nextLine();
+		boolean ok = true;
+		if (response.equals("")) {
+			ok = false;
+		}
+		for (int i = 0; i < response.length(); i++) {
+			if(!Character.isDigit(response.charAt(i))) {
+				ok = false;
+			}
+		}
+		if (ok && Long.parseLong(response) < 1) {
+			ok = false;
+		}
+		while (!ok) {
+			System.out.println("Invalid response. How much would you like to bet?");
+			response = in.nextLine();
+			ok = true;
+			if (response.equals("")) {
+				ok = false;
+			}
+			for (int i = 0; i < response.length(); i++) {
+				if(!Character.isDigit(response.charAt(i))) {
+					ok = false;
+				}
+			}
+			if (ok && Long.parseLong(response) < 1) {
+				ok = false;
+			}
+			if (Long.parseLong(response) > bet) {
+				ok = false;
+			}
+		}
+		
+		ddbet = bet + Long.parseLong(response);
+		
 		System.out.print("You were dealt ");
 		if (hand.get(hand.size()-1).rank() == "8" || hand.get(hand.size()-1).rank() == "A") {
 			System.out.println("an " + hand.get(hand.size()-1).rank());
@@ -273,9 +326,6 @@ public class BlackJack {
 			hand.add(s);
 			hand.add(deck.deal());
 			original = chips;
-			if (doubledown) {
-				bet /= 2;
-			}
 			stand = false;
 			doubledown = false;
 		}
