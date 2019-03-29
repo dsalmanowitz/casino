@@ -261,7 +261,7 @@ public class BlackJack {
 		doubledown = true;
 		hand.add(deck.deal());
 
-		System.out.println("How much more would you like to bet?");
+		System.out.println("How much more would you like to bet? (Can increase initial bet by up to 100%)");
 		String response = in.nextLine();
 		boolean ok = true;
 		if (response.equals("")) {
