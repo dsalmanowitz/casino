@@ -272,7 +272,7 @@ public class BlackJack {
 				ok = false;
 			}
 		}
-		if (ok && Long.parseLong(response) < 1) {
+		if (ok && (Long.parseLong(response) < 1 || Long.parseLong(response) > bet)) {
 			ok = false;
 		}
 		while (!ok) {
@@ -287,10 +287,7 @@ public class BlackJack {
 					ok = false;
 				}
 			}
-			if (ok && Long.parseLong(response) < 1) {
-				ok = false;
-			}
-			if (Long.parseLong(response) > bet) {
+			if (ok && (Long.parseLong(response) < 1 || Long.parseLong(response) > bet)) {
 				ok = false;
 			}
 		}
